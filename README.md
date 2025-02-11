@@ -2,7 +2,7 @@
 
 This web application allows users to upload an image, remove its background, and replace it with a new one. It's built using Flask for the backend and OpenCV for image processing.
 
-<img src="screenhost.png" width="500" />
+<img src="/screenshot.png" width="500" />
 
 ## Features
 

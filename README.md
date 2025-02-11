@@ -22,6 +22,22 @@ This web application allows users to upload an image, remove its background, and
 
 ## Installation
 
+### Using Docker
+
+1. Make sure you have Docker and Docker Compose installed
+2. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/background-remover-web.git
+   cd background-remover-web
+   ```
+3. Build and run with Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
+4. Visit `http://localhost:5000` in your browser
+
+### Manual Installation
+
 ### Clone the Repository
 
 ```bash

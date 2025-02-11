@@ -8,14 +8,14 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# Yapılandırma ayarları
+
 UPLOAD_FOLDER = 'static/images/uploads'
 RESULT_FOLDER = 'static/images/results'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max dosya boyutu
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  
 
-# Gerekli klasörleri oluştur
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULT_FOLDER, exist_ok=True)
 
@@ -24,7 +24,7 @@ def allowed_file(filename):
 
 def remove_background(image_path):
     input_image = Image.open(image_path)
-    # Görsel boyutunu sınırla
+    
     max_size = 1500
     if input_image.size[0] > max_size or input_image.size[1] > max_size:
         ratio = min(max_size / input_image.size[0], max_size / input_image.size[1])
@@ -34,13 +34,13 @@ def remove_background(image_path):
     return output_image
 
 def change_background(foreground_path, background_path):
-    # Ön plan görselini oku
+    
     foreground = cv2.imread(foreground_path, cv2.IMREAD_UNCHANGED)
-    # Arka plan görselini oku ve ön plan boyutuna yeniden boyutlandır
+    
     background = cv2.imread(background_path)
     background = cv2.resize(background, (foreground.shape[1], foreground.shape[0]))
     
-    # Alpha kanalını kullanarak görüntüleri birleştir
+   
     alpha_channel = foreground[:, :, 3] / 255.0
     alpha_3_channel = np.stack([alpha_channel] * 3, axis=-1)
     
@@ -67,7 +67,6 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        # Arka planı kaldır
         output_image = remove_background(filepath)
         result_path = os.path.join(RESULT_FOLDER, f'no_bg_{filename}')
         output_image.save(result_path, 'PNG')
@@ -95,7 +94,7 @@ def change_background_route():
         bg_filepath = os.path.join(app.config['UPLOAD_FOLDER'], bg_filename)
         background_file.save(bg_filepath)
         
-        # Arka planı değiştir
+      
         result = change_background(foreground_path, bg_filepath)
         result_filename = f'final_{os.path.basename(foreground_path)}'
         result_path = os.path.join(RESULT_FOLDER, result_filename)

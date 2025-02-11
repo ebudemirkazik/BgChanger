@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arka Plan Kırpma Uygulaması</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50">
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Logo ve Başlık -->
+            <div class="text-center mb-12">
+                <h1
+                    class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 mb-2">
+                    BgChanger</h1>
+                <p class="text-gray-600">Görsellerinizi tek tıkla dönüştürün</p>
+            </div>
+
+            <!-- Ana Kart -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                <!-- Görsel Yükleme Bölümü -->
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Görsel Yükle</h2>
+                        <form id="uploadForm" class="space-y-4">
+                            <div class="flex items-center justify-center w-full">
+                                <label id="uploadPreviewContainer"
+                                    class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all relative">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6 upload-placeholder">
+                                        <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                            </path>
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Görsel
+                                                yüklemek için tıklayın</span> veya sürükleyip bırakın</p>
+                                        <p class="text-xs text-gray-500">PNG, JPG veya JPEG (MAX. 16MB)</p>
+                                    </div>
+                                    <input type="file" id="imageInput" class="hidden" accept=".png,.jpg,.jpeg"
+                                        required />
+                                </label>
+                            </div>
+                            <button type="submit"
+                                class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                Arka Planı Kaldır
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- İşlenmiş Görsel Sonucu -->
+                    <div id="resultSection" class="hidden space-y-6 border-t pt-6">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Arka Planı Kaldırılmış Görsel</h2>
+                            <div class="relative rounded-lg overflow-hidden bg-gray-100">
+                                <img id="resultImage" class="max-w-full h-auto mx-auto" src="" alt="Sonuç">
+                            </div>
+                        </div>
+
+                        <!-- Yeni Arka Plan Seçimi -->
+                        <form id="backgroundForm" class="space-y-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Yeni Arka Plan Seç</h2>
+                            <div class="flex items-center justify-center w-full">
+                                <label id="backgroundPreviewContainer"
+                                    class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all relative">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6 upload-placeholder">
+                                        <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Arka plan
+                                                görseli seçin</span></p>
+                                        <p class="text-xs text-gray-500">PNG, JPG veya JPEG</p>
+                                    </div>
+                                    <input type="file" id="backgroundInput" class="hidden" accept=".png,.jpg,.jpeg"
+                                        required />
+                                </label>
+                            </div>
+                            <button type="submit"
+                                class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                Arka Planı Değiştir
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Final Sonuç -->
+                    <div id="finalResult" class="hidden space-y-4 border-t pt-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Son Görsel</h2>
+                        <div class="relative rounded-lg overflow-hidden bg-gray-100">
+                            <img id="finalImage" class="max-w-full h-auto mx-auto" src="" alt="Final">
+                        </div>
+                        <a id="downloadBtn" href="" download
+                            class="inline-flex justify-center w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
+                            Görseli İndir
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Yükleniyor Göstergesi -->
+                <div class="loading hidden">
+                    <div
+                        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity flex items-center justify-center z-50">
+                        <div class="bg-white p-6 rounded-lg shadow-xl">
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent">
+                                </div>
+                                <p class="text-gray-600">İşleniyor...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-8 mt-12">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="flex items-center justify-center space-x-2 text-gray-600">
+                <span>Made with</span>
+                <svg class="w-5 h-5 text-red-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span>by</span>
+            </div>
+            <div class="mt-2">
+                <a href="https://github.com/BetulTopkan" target="_blank"
+                    class="inline-flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition-colors">
+                    <span class="font-medium">Betül Topkan</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Butonları devre dışı bırakma fonksiyonu
+        function toggleButtons(disabled) {
+            const buttons = document.querySelectorAll('button[type="submit"]');
+            buttons.forEach(button => {
+                button.disabled = disabled;
+            });
+        }
+
+        // Dosya input'larına event listener'lar ekle
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            showFilePreview(this, document.getElementById('uploadPreviewContainer'));
+        });
+
+        document.getElementById('backgroundInput').addEventListener('change', function (e) {
+            showFilePreview(this, document.getElementById('backgroundPreviewContainer'));
+        });
+
+        // Dosya seçildiğinde önizleme göster
+        function showFilePreview(input, previewContainer) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const placeholder = previewContainer.querySelector('.upload-placeholder');
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
+                    }
+                    // Performans için mevcut img elementini güncelle veya oluştur
+                    let preview = previewContainer.querySelector('img');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.classList.add('w-full', 'h-full', 'object-cover', 'rounded-lg');
+                        previewContainer.appendChild(preview);
+                    }
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.querySelector('.loading').classList.remove('hidden');
+            toggleButtons(true);
+
+            const formData = new FormData();
+            formData.append('file', document.getElementById('imageInput').files[0]);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                document.getElementById('resultImage').src = data.result_path;
+                document.getElementById('resultSection').classList.remove('hidden');
+                window.foregroundPath = data.result_path;
+            } catch (error) {
+                alert('Hata oluştu: ' + error);
+            } finally {
+                document.querySelector('.loading').classList.add('hidden');
+                toggleButtons(false);
+            }
+        });
+
+        document.getElementById('backgroundForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.querySelector('.loading').classList.remove('hidden');
+            toggleButtons(true);
+
+            const formData = new FormData();
+            formData.append('background', document.getElementById('backgroundInput').files[0]);
+            formData.append('foreground_path', window.foregroundPath);
+
+            try {
+                const response = await fetch('/change-background', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                document.getElementById('finalImage').src = data.result_path;
+                document.getElementById('finalResult').classList.remove('hidden');
+                document.getElementById('downloadBtn').href = data.result_path;
+            } catch (error) {
+                alert('Hata oluştu: ' + error);
+            } finally {
+                document.querySelector('.loading').classList.add('hidden');
+                toggleButtons(false);
+            }
+        });
+    </script>
+</body>
+
+</html>

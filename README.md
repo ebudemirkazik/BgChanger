@@ -24,6 +24,8 @@ This web application allows users to upload an image, remove its background, and
 
 ### Using Docker
 
+<!-- test deneme -->
+
 1. Make sure you have Docker and Docker Compose installed
 2. Clone the repository:
    ```bash
